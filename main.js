@@ -70,9 +70,9 @@ const uniforms = {
     b_xy:       {type: 'v2', value: new THREE.Vector2(0.5, 0.5)},
     b_s:        {type: 'v2', value: new THREE.Vector2(0.5, 0.5)},
     b_t:        {type: 'v2', value: new THREE.Vector2(0.5, 0.5)},
-    b_type:     {type: 'i',  value: 1},
+    b_type:     {type: 'i',  value: 2},
     b_shape:    {type: 'i',  calue: 0},
-    b_r:        {type: 'f',  value: 1},
+    b_r:        {type: 'f',  value: 25},
     b_v:        {type: 'f',  value: 1.0},
 };
 function createShaderMaterial(fsname) {
@@ -119,7 +119,7 @@ const app = new Vue({
         uniforms: uniforms,
         N: N,
         styleN: Math.min(styleN, window.innerWidth - 20),
-        brushMode: 1,
+        brushMode: 2,
         dofft: true,    // TODO
         flag: {
             init: false, 
