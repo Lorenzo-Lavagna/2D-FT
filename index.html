@@ -83,7 +83,7 @@
     <!-- ============================================== -->
     <h1>2D-FT</h1>
     <div style='margin-bottom: 16px;'>
-        2D inverse Fourier Transform real-time editor online. Simple and phone-friendly. Click or touch the spectrum to edit the mask and see the result in real-time.<br> 
+        2D inverse Fourier Transform real-time editor online. Simple and phone-friendly; you can input photos directly from your camera. Click or touch the spectrum to edit the mask and see the result of the inverse transform in real-time.<br> 
         This work is based on the original work of Tetsuro Sakamoto: <a href='https://github.com/tsakamoto/2d-inverse-fourier-transform' target='_blank'>2D Inverse Fourier Transform Playground</a>
         Thanks Tetsuro!
     </div>
@@ -91,12 +91,20 @@
     <!-- ============================================== -->
     <!-- INPUT IMAGE SELECTION                          -->
     <!-- ============================================== -->
+
+
     <div style="margin-bottom: 8px;">
         <h3>Select input image</h3>
-        Image URL:
-        <input v-model='imageURL' size='10' @keyup.enter='loadImage(imageURL)' /><br>
-        or <input type='file' @change='loadLoaclImage' />
-        <br><br>
+        <div>
+            Image URL:
+            <input v-model='imageURL' size='10' @keyup.enter='loadImage(imageURL)' /><br>
+            or <input type='file' @change='loadLoaclImage' />
+        </div>
+        <div style="margin: 8px 0;">
+            <label><input type="radio" v-model="cropImage" :value="true" @change="loadImage(imageURL)"> Crop</label>
+            <label style="margin-left: 8px;"><input type="radio" v-model="cropImage" :value="false" @change="loadImage(imageURL)"> Stretch</label>
+        </div>
+        <br>
         <div class='wrapper-small' :style='{width: styleN}'>
             <div v-for='image in images' @click='loadImage(image)'>
                 <img :src='image' width='100%' style='filter: grayscale(1.0); cursor: pointer;' />

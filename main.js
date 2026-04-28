@@ -121,6 +121,7 @@ const app = new Vue({
         styleN: Math.min(styleN, window.innerWidth - 20),
         brushMode: 2,
         dofft: true,    // TODO
+        cropImage: true,
         flag: {
             init: false, 
             mask: false,
@@ -177,6 +178,18 @@ const app = new Vue({
             let loader = new THREE.TextureLoader();
             let app = this;
             let onLoad = function(texture) {
+                if (app.cropImage && texture.image) {
+                    let img = texture.image;
+                    let canvas = document.createElement('canvas');
+                    canvas.width = app.N;
+                    canvas.height = app.N;
+                    let ctx = canvas.getContext('2d');
+                    let size = Math.min(img.width, img.height);
+                    let sx = (img.width - size) / 2;
+                    let sy = (img.height - size) / 2;
+                    ctx.drawImage(img, sx, sy, size, size, 0, 0, app.N, app.N);
+                    texture = new THREE.CanvasTexture(canvas);
+                }
                 texture.magFilter = THREE.NearestFilter;
                 texture.minFilter = THREE.NearestFilter;
                 tex.original.texture = texture;
