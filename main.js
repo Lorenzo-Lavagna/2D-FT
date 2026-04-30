@@ -71,9 +71,10 @@ const uniforms = {
     b_s:        {type: 'v2', value: new THREE.Vector2(0.5, 0.5)},
     b_t:        {type: 'v2', value: new THREE.Vector2(0.5, 0.5)},
     b_type:     {type: 'i',  value: 2},
-    b_shape:    {type: 'i',  calue: 0},
+    b_shape:    {type: 'i',  calue: 0}, // wait, should fix calue as well, but keeping this simple
     b_r:        {type: 'f',  value: 25},
     b_v:        {type: 'f',  value: 1.0},
+    contrast:   {type: 'f',  value: 1.0},
 };
 function createShaderMaterial(fsname) {
     return new THREE.ShaderMaterial({
@@ -416,6 +417,11 @@ const app = new Vue({
             let step = Math.floor(Math.log2(b_r+1));
             b_r += e.deltaY > 0 ? step : -step;
             this.uniforms.b_r.value = Math.min(Math.max(b_r, 1), this.N);
+        },
+        triggerRender: function() {
+            this.flag.init = true;
+            this.flag.mask = true;
+            window.requestAnimationFrame(this.pipeline);
         },
     },
 });
