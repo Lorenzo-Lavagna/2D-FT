@@ -114,7 +114,7 @@ function render(material, texA, texB, target, ctx) {
 const app = new Vue({
     el: '.app',
     data: {
-        imageURL: 'image/boat.png',
+        imageURL: 'image/image_1.jpg',
         maskURL:  '',
         uniforms: uniforms,
         N: N,
@@ -127,13 +127,14 @@ const app = new Vue({
             mask: false,
         },
         images: [
-            'image/boat.png',
-            'image/goldhill.png',
-            'image/baboon.png',
-            'image/fruits.png',
-            'image/airplane.png',
-            'image/2x2spot.png',
-            'image/8x8spot.png',
+            'image/image_1.png',
+            'image/image_2.png',
+            'image/image_3.png',
+            'image/image_4.jpg',
+            'image/image_5.jpg',
+            'image/image_6.jpg',
+            'image/image_7.jpg',
+            'image/image_8.png',
         ],
         masks: [
             'mask/fill.png',
@@ -365,6 +366,9 @@ const app = new Vue({
             this.uniforms.b_active.value = 0;
         },
         mouseMove: function(e) {
+            if (e.type === 'mousemove' && e.buttons === 0) {
+                this.mouseUp();
+            }
             let pos = this.getMousePos(e);
             this.uniforms.b_xy.value.x =     pos.x/this.styleN;
             this.uniforms.b_xy.value.y = 1.0-pos.y/this.styleN;
@@ -379,12 +383,31 @@ const app = new Vue({
             window.requestAnimationFrame(this.pipeline);
         },
         touchStart: function(e) {
-            this.mouseDown(e);
+            if (e.touches && e.touches.length === 2) {
+                this.mouseUp();
+                let dx = e.touches[0].clientX - e.touches[1].clientX;
+                let dy = e.touches[0].clientY - e.touches[1].clientY;
+                this.initialPinchDistance = Math.hypot(dx, dy);
+                this.initialBrushSize = this.uniforms.b_r.value;
+            } else if (e.touches && e.touches.length === 1) {
+                this.mouseDown(e);
+            }
         },
         touchMove: function(e) {
-            this.mouseMove(e);
+            if (e.touches && e.touches.length === 2) {
+                let dx = e.touches[0].clientX - e.touches[1].clientX;
+                let dy = e.touches[0].clientY - e.touches[1].clientY;
+                let distance = Math.hypot(dx, dy);
+                if (this.initialPinchDistance) {
+                    let scale = distance / this.initialPinchDistance;
+                    this.uniforms.b_r.value = Math.min(Math.max(this.initialBrushSize * scale, 1), this.N);
+                }
+            } else {
+                this.mouseMove(e);
+            }
         },
         touchEnd: function(e) {
+            this.initialPinchDistance = 0;
             this.mouseUp();
         },
         wheel: function(e) {

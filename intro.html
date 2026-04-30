@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Introduction - 2D-FT</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        a {
+            color: magenta;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        h2 {
+            margin-top: 1.5em;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 5px;
+        }
+
+        .back-link {
+            display: block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            align-self: flex-start;
+        }
+        
+        .back-link:hover {
+            color: magenta;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <a href="index.html" class="back-link">&larr; Back to Editor</a>
+        
+        <h2>Fourier analysis in human visual perception</h2>
+        <p>It is pretty well known that our earing is based on the decomposition of the frequencies within sound waves, performed by the <a href="cochlea.jpg" target="_blank">cochlea</a>. The cochlea is a spiral-shaped organ in the inner ear that contains hair cells that respond to different frequencies of sound. When sound waves enter the ear, they cause the hair cells to vibrate, and this vibration is then converted into electrical signals that are sent to the brain for processing. The cochlea essentially performs a Fourier transform on the incoming sound waves, allowing us to perceive different frequencies and tones, which is fundamental for distinguishing between multiple sound sources.</p>
+
+        <p>However, it's less well known that the frequency separation is not limited to sound processing. It is also fundamental for our vision.<br>
+        Just as your ear breaks down sound waves into pitches, your visual system literally breaks down images into different spatial frequencies (the density of visual details) before stitching them back together.<br>
+        Your brain has two parallel "cables" (the magnocellular and parvocellular pathways) that process low and high spatial frequencies separately (<a href="https://doi.org/10.1146/annurev.ne.08.030185.002555" target="_blank">Shapley, 1985</a>). The magnocellular pathway quickly detects broad shapes and motion, while the parvocellular pathway processes fine textures. This separation allows us to perceive both the overall layout of a scene and its intricate details simultaneously.</p>
+        
+        <h2>Practical Applications</h2>
+        <p>In image processing and computer vision, understanding spatial frequencies can help in tasks like image compression, denoising, sharpening, feature extraction, and even in the design of neural networks for image recognition.</p>
+        
+        <h2>Conceptual Application</h2>
+        <p>The concept of spatial frequency helps to understand how the human eye perceives images. Artists have always used squinting to focus on the low spatial frequencies, allowing them to evaluate the overall composition and balance of the image without getting distracted by fine details. A similar kind of filtering can be applied on any frequency band, allowing the evaluation of the composition on different levels of detail, from the macroscopic structure to the microscopic textures.</p>
+
+        <h2>How to use 2D-FT effectively</h2>
+        Check this video and everything will be clear: <br>
+        <a href="https://www.youtube.com/watch?v=OOu5KP3Gvx0" target="_blank">Image Filtering in Frequency Domain | Image Processing II - YouTube</a>
+    </div>
+</body>
+</html>
