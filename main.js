@@ -95,7 +95,6 @@ let ctx = {};
 let ctxNames = [
     'result',
     'wave',
-    'mask',
     'masked',
     'spectral',
     'original',
@@ -138,7 +137,6 @@ const app = new Vue({
             'image/image_8.png',
         ],
         masks: [
-            'mask/fill.png',
             'mask/clear.png',
             'mask/highpass_square.png',
             'mask/lowpass_square.png',
@@ -298,7 +296,7 @@ const app = new Vue({
                 tex.draw = [tex.draw[1], tex.draw[0]];
 
                 // Mask
-                render(sm['mask-cv'], tex.draw[0], null, null, ctx.mask);
+                // render(sm['mask-cv'], tex.draw[0], null, null, ctx.mask);
 
                 // Masked
                 render(sm['masked'], tex.fft[0], tex.draw[0], tex.ifft[0], null);
@@ -326,11 +324,15 @@ const app = new Vue({
             render(sm['wave'], tex.fft[0], null, null, ctx.wave);
         },
         getMousePos: function(e) {
-            let cx, cy;
+            let cx = 0, cy = 0;
             if (e.touches && e.touches.length > 0) {
                 let rect = e.target.getBoundingClientRect();
-                cx = e.touches[0].clientX - rect.left;
-                cy = e.touches[0].clientY - rect.top;
+                for (let i = 0; i < e.touches.length; i++) {
+                    cx += e.touches[i].clientX;
+                    cy += e.touches[i].clientY;
+                }
+                cx = cx / e.touches.length - rect.left;
+                cy = cy / e.touches.length - rect.top;
             } else {
                 cx = e.offsetX;
                 cy = e.offsetY;
@@ -338,6 +340,7 @@ const app = new Vue({
             return { x: cx, y: cy };
         },
         mouseDown: function(e) {
+            if (e.type.startsWith('mouse') && this.lastTouchTime && Date.now() - this.lastTouchTime < 2500) return;
             this.uniforms.b_active.value = 1;
             if (e.type.startsWith('touch')) {
                 this.uniforms.b_type.value = this.brushMode;
@@ -367,6 +370,7 @@ const app = new Vue({
             this.uniforms.b_active.value = 0;
         },
         mouseMove: function(e) {
+            if (e.type.startsWith('mouse') && this.lastTouchTime && Date.now() - this.lastTouchTime < 2500) return;
             if (e.type === 'mousemove' && e.buttons === 0) {
                 this.mouseUp();
             }
@@ -384,6 +388,7 @@ const app = new Vue({
             window.requestAnimationFrame(this.pipeline);
         },
         touchStart: function(e) {
+            this.lastTouchTime = Date.now();
             if (e.touches && e.touches.length === 2) {
                 this.mouseUp();
                 let dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -391,11 +396,18 @@ const app = new Vue({
                 this.initialPinchDistance = Math.hypot(dx, dy);
                 this.initialBrushSize = this.uniforms.b_r.value;
                 this.isTwoFingerTap = true;
+
+                let pos = this.getMousePos(e);
+                this.uniforms.b_xy.value.x =     pos.x/this.styleN;
+                this.uniforms.b_xy.value.y = 1.0-pos.y/this.styleN;
+                window.requestAnimationFrame(this.pipeline);
             } else if (e.touches && e.touches.length === 1) {
+                if (this.lastPinchEnd && Date.now() - this.lastPinchEnd < 1000) return;
                 this.mouseDown(e);
             }
         },
         touchMove: function(e) {
+            this.lastTouchTime = Date.now();
             if (e.touches && e.touches.length === 2) {
                 let dx = e.touches[0].clientX - e.touches[1].clientX;
                 let dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -407,16 +419,29 @@ const app = new Vue({
                     let scale = distance / this.initialPinchDistance;
                     this.uniforms.b_r.value = Math.min(Math.max(this.initialBrushSize * scale, 1), this.N);
                 }
+
+                let pos = this.getMousePos(e);
+                this.uniforms.b_xy.value.x =     pos.x/this.styleN;
+                this.uniforms.b_xy.value.y = 1.0-pos.y/this.styleN;
+                window.requestAnimationFrame(this.pipeline);
             } else {
+                if (this.lastPinchEnd && Date.now() - this.lastPinchEnd < 1000) return;
                 this.mouseMove(e);
             }
         },
         touchEnd: function(e) {
+            this.lastTouchTime = Date.now();
             if (this.isTwoFingerTap) {
                 this.brushMode = this.brushMode === 1 ? 2 : 1;
                 this.isTwoFingerTap = false;
             }
-            this.initialPinchDistance = 0;
+            if (e.touches && e.touches.length === 0) {
+                this.lastPinchEnd = 0;
+                this.initialPinchDistance = 0;
+            } else if (this.initialPinchDistance) {
+                this.lastPinchEnd = Date.now();
+                this.initialPinchDistance = 0;
+            }
             this.mouseUp();
         },
         wheel: function(e) {

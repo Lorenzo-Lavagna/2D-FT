@@ -153,21 +153,6 @@
             <!-- <h2>Wave</h2> -->
             <canvas id='cv-wave'></canvas>
         </div>
-        
-        <!-- ============================================== -->
-        <!-- MASK DISPLAY (INTERACTIVE)                     -->
-        <!-- ============================================== -->
-        <div>
-            <div style='position: relative;'>
-                <canvas id='cv-mask' @mousemove='mouseMove' @mousedown='mouseDown' @mouseup='mouseUp' @wheel='wheel' @touchstart.prevent='touchStart' @touchmove.prevent='touchMove' @touchend.prevent='touchEnd'
-                    style='cursor: crosshair;' oncontextmenu='return false'>
-                </canvas>
-                <svg :width='styleN' :height='styleN'>
-                    <circle :cx='uniforms.b_xy.value.x*styleN' :cy='(1.0-uniforms.b_xy.value.y)*styleN'
-                        :r='uniforms.b_r.value/2*styleN/N' stroke='magenta' fill='none' stroke-width='2' />
-                </svg>
-            </div>
-        </div>
 
         <!-- ============================================== -->
         <!-- MASK FILTER SELECTION                          -->
