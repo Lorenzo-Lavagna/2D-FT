@@ -390,6 +390,7 @@ const app = new Vue({
                 let dy = e.touches[0].clientY - e.touches[1].clientY;
                 this.initialPinchDistance = Math.hypot(dx, dy);
                 this.initialBrushSize = this.uniforms.b_r.value;
+                this.isTwoFingerTap = true;
             } else if (e.touches && e.touches.length === 1) {
                 this.mouseDown(e);
             }
@@ -400,6 +401,9 @@ const app = new Vue({
                 let dy = e.touches[0].clientY - e.touches[1].clientY;
                 let distance = Math.hypot(dx, dy);
                 if (this.initialPinchDistance) {
+                    if (Math.abs(distance - this.initialPinchDistance) > 10) {
+                        this.isTwoFingerTap = false;
+                    }
                     let scale = distance / this.initialPinchDistance;
                     this.uniforms.b_r.value = Math.min(Math.max(this.initialBrushSize * scale, 1), this.N);
                 }
@@ -408,6 +412,10 @@ const app = new Vue({
             }
         },
         touchEnd: function(e) {
+            if (this.isTwoFingerTap) {
+                this.brushMode = this.brushMode === 1 ? 2 : 1;
+                this.isTwoFingerTap = false;
+            }
             this.initialPinchDistance = 0;
             this.mouseUp();
         },

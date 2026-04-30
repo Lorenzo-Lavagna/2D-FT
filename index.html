@@ -1,7 +1,7 @@
-<title>2D-FT</title>
+<title>2D Inverse Fourier Transform Playground</title>
 <meta charset="UTF-8">
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<meta name='description' content='2D-FT'>
+<meta name='description' content='2D fast Fourier transform live demo using WebGL2.0. 2DFFT'>
 <!-- <script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script> -->
 <script src='scripts/vue.min.js'></script>
 <script src='scripts/three.min.js'></script>
@@ -173,7 +173,7 @@
         <!-- MASK FILTER SELECTION                          -->
         <!-- ============================================== -->
         <div>
-            <h3>Try some preset masks</h3>
+            <h3>Mask Selection</h3>
             Mask URL:
             <input v-model='maskURL' size='10' @keyup.enter='loadMask(maskURL)'><br>
             or <input type='file' @change='loadLoaclMask' />
@@ -186,25 +186,13 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- CONTRAST SETTING                               -->
-        <!-- ============================================== -->
-        <div style="margin-bottom: 16px;">
-            <h3>Spectrum Contrast</h3>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                Low
-                <input type="range" v-model.number="uniforms.contrast.value" min="0.1" max="5.0" step="0.1" @input="triggerRender" />
-                High
-            </div>
-        </div>
-
-        <!-- ============================================== -->
         <!-- ackNOWLEDGEMENT AND FOOTER                        -->
         <!-- ============================================== -->
         <div style='margin-top: 16px; color: #555;'>
             <h3>Tips</h3>
             <ul style='text-align: left; display: inline-block;'>
                 <li>Use mouse wheel or pinch to zoom in/out the brush size.</li>
-                <li>Right-click to invert the drawing mode.</li>
+                <li>Right-click or tap with two fingers to invert the drawing mode.</li>
                 <li>Low frequencies are in the center and high frequencies are at the edges.</li>
             </ul>
         </div>
@@ -231,7 +219,6 @@
     uniform vec2 d, b_xy, b_s, b_t;
     uniform int b_active, b_type;
     uniform float b_r, b_v;
-    uniform float contrast;
     
     out vec4 fragColor;
 
@@ -323,7 +310,6 @@
     void main() {
         vec2 pf = shift(gl_FragCoord.xy);
         float F = log(length(texture(ta, pf*d).rg*float(N)))/8.0; // TODO 8 is magick number
-        F = pow(F, contrast); // enhance contrast
         fragColor = vec4(F);
     }
 </script>
@@ -339,7 +325,6 @@
     void main() {
         vec2 pf = shift(gl_FragCoord.xy);
         float F = log(length(texture(ta, pf*d).rg*float(N)))/8.0; // TODO 8 is magick number
-        F = pow(F, contrast); // enhance contrast
         vec4 mask = texture(tb, gl_FragCoord.xy*d);
         fragColor = vec4(F*mask.x);
     }
