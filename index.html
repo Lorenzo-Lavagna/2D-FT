@@ -1,7 +1,7 @@
-<title>2D-FT</title>
+<title>2D Inverse Fourier Transform Playground</title>
 <meta charset="UTF-8">
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<meta name='description' content='2D-FT'>
+<meta name='description' content='2D fast Fourier transform live demo using WebGL2.0. 2DFFT'>
 <!-- <script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script> -->
 <script src='scripts/vue.min.js'></script>
 <script src='scripts/three.min.js'></script>
@@ -87,7 +87,7 @@
 
         This project is based on the original work of Tetsuro Sakamoto: <a href='https://github.com/tsakamoto/2d-inverse-fourier-transform' target='_blank'>2D Inverse Fourier Transform Playground</a>.
         Thanks Tetsuro!<br><br>
-        <a href='intro.html'>Read the introduction to Fourier analysis in human visual perception &rarr;</a>
+        Read the <a href='intro.html'>introduction&rarr;</a> to know how to use this tool effectively.
     </div>
 
     <!-- ============================================== -->
@@ -120,7 +120,7 @@
     <div class='wrapper-large'>
         <!-- COLUMN 2: Result Image -->
         <div>
-            <canvas id='cv-result'></canvas>
+            <canvas id='cv-result' @pointerdown='showOriginal = true' @pointerup='showOriginal = false' @pointerleave='showOriginal = false' @pointercancel='showOriginal = false' style='cursor: pointer;'></canvas>
         </div>
         
         <!-- COLUMN 3: Masked Spectrum (Interactive) -->
@@ -178,6 +178,8 @@
             Use mouse wheel or pinch to zoom in/out the brush size.
             <br><br>
             Right-click or tap with two fingers to invert the drawing mode.
+            <br><br>
+            Press and hold on the result image to see the original image.
             <br><br>
             Low frequencies are in the center and high frequencies are at the edges.
         </div>

@@ -120,6 +120,7 @@ const app = new Vue({
         N: N,
         styleN: Math.min(styleN, window.innerWidth - 20),
         brushMode: 2,
+        showOriginal: false,
         dofft: true,    // TODO
         cropImage: true,
         flag: {
@@ -143,6 +144,12 @@ const app = new Vue({
             'mask/bandpass_square.png',
         ],
     }, 
+    watch: {
+        showOriginal: function() {
+            this.flag.mask = true;
+            window.requestAnimationFrame(this.pipeline);
+        }
+    },
     mounted: function () {
         function createContext(app, id) {
             var cv = document.getElementById(id);
@@ -316,7 +323,12 @@ const app = new Vue({
                     render(sm['minmax'], tex.minmax[0], null, tex.minmax[1], null);
                     tex.minmax.reverse(); // swap
                 }
-                render(sm['result-cv'], tex.ifft[0], tex.minmax[0], null, ctx.result);
+                
+                if (this.showOriginal) {
+                    render(sm['gray'], tex.original, null, null, ctx.result);
+                } else {
+                    render(sm['result-cv'], tex.ifft[0], tex.minmax[0], null, ctx.result);
+                }
             }
 
             // Wave
