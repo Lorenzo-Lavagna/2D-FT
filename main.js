@@ -1,6 +1,6 @@
 'use strict';
 
-const N      = 1 << 8;   // image size (width and height), must be 2^n
+const N      = 1 << 9;   // image size (width and height), must be 2^n
 const styleN = 400;
 
 
