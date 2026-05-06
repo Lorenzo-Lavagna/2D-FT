@@ -75,6 +75,7 @@ const uniforms = {
     b_r:        {type: 'f',  value: 25},
     b_v:        {type: 'f',  value: 1.0},
     contrast:   {type: 'f',  value: 1.0},
+    log_scale:  {type: 'i',  value: 0},
 };
 function createShaderMaterial(fsname) {
     return new THREE.ShaderMaterial({
