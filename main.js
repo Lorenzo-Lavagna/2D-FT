@@ -401,14 +401,23 @@ const app = new Vue({
             window.requestAnimationFrame(this.pipeline);
         },
         touchStart: function(e) {
-            this.lastTouchTime = Date.now();
+            let now = Date.now();
+            if (this.lastTapTime && now - this.lastTapTime < 300) {
+                // Double tap detected
+                this.brushMode = this.brushMode === 1 ? 2 : 1;
+                this.lastTapTime = 0; // Reset
+                e.preventDefault();
+                return;
+            }
+            this.lastTapTime = now;
+            this.lastTouchTime = now;
+            
             if (e.touches && e.touches.length === 2) {
                 this.mouseUp();
                 let dx = e.touches[0].clientX - e.touches[1].clientX;
                 let dy = e.touches[0].clientY - e.touches[1].clientY;
                 this.initialPinchDistance = Math.hypot(dx, dy);
                 this.initialBrushSize = this.uniforms.b_r.value;
-                this.isTwoFingerTap = true;
 
                 let pos = this.getMousePos(e);
                 this.uniforms.b_xy.value.x =     pos.x/this.styleN;
@@ -426,9 +435,6 @@ const app = new Vue({
                 let dy = e.touches[0].clientY - e.touches[1].clientY;
                 let distance = Math.hypot(dx, dy);
                 if (this.initialPinchDistance) {
-                    if (Math.abs(distance - this.initialPinchDistance) > 10) {
-                        this.isTwoFingerTap = false;
-                    }
                     let scale = distance / this.initialPinchDistance;
                     this.uniforms.b_r.value = Math.min(Math.max(this.initialBrushSize * scale, 1), this.N);
                 }
@@ -444,10 +450,6 @@ const app = new Vue({
         },
         touchEnd: function(e) {
             this.lastTouchTime = Date.now();
-            if (this.isTwoFingerTap) {
-                this.brushMode = this.brushMode === 1 ? 2 : 1;
-                this.isTwoFingerTap = false;
-            }
             if (e.touches && e.touches.length === 0) {
                 this.lastPinchEnd = 0;
                 this.initialPinchDistance = 0;
